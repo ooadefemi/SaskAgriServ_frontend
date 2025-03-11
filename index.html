@@ -1,0 +1,85 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Data Portal</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid black; padding: 10px; text-align: left; }
+        th { background-color: #f4f4f4; }
+    </style>
+</head>
+<body>
+
+    <h2>Farmer Data Portal</h2>
+
+    <h3>Add Farmer</h3>
+    <form id="farmerForm">
+        <label for="emailid">Email ID:</label>
+        <input type="text" id="emailid" required><br><br>
+        
+        <label for="name">Name:</label>
+        <input type="text" id="name" required><br><br>
+
+        <label for="age">Age:</label>
+        <input type="number" id="age" required><br><br>
+
+        <button type="submit">Add Farmer</button>
+    </form>
+
+    <h3>Farmer List</h3>
+    <button onclick="fetchFarmers()">Refresh List</button>
+    <table>
+        <thead>
+            <tr>
+                <th>Email ID</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody id="farmerTableBody"></tbody>
+    </table>
+
+    <script>
+        const API_URL = "https://ybgw0bm3si.execute-api.us-east-2.amazonaws.com/prod";
+
+        document.getElementById("farmerForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const emailid = document.getElementById("emailid").value;
+            const name = document.getElementById("name").value;
+            const age = document.getElementById("age").value;
+
+            fetch(API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ emailID: emailid, name: name, age: age })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                fetchFarmers(); // Refresh list after adding a farmer
+            })
+            .catch(error => console.error("Error:", error));
+        });
+
+        function fetchFarmers() {
+            fetch(API_URL)
+            .then(response => response.json())
+            .then(data => {
+                const tableBody = document.getElementById("farmerTableBody");
+                tableBody.innerHTML = "";
+                data.forEach(farmer => {
+                    const row = <tr><td>${farmer.emailID}</td><td>${farmer.name}</td><td>${farmer.age}</td></tr>;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error("Error fetching farmers:", error));
+        }
+    </script>
+
+</body>
+</html>
