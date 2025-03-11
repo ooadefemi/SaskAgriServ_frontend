@@ -20,8 +20,23 @@
     
     <button onclick="addFarmer()">Add Farmer</button>
 
+    <h2>Farmer List</h2>
+    <button onclick="fetchFarmers()">Refresh List</button>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Email ID</th>
+                <th>Name</th>
+                <th>Age</th>
+            </tr>
+        </thead>
+        <tbody id="farmer-list"></tbody>
+    </table>
+
     <script>
         const API_URL = "https://ybgw0bm3si.execute-api.us-east-2.amazonaws.com/prod"; // Replace with actual API URL
+        const GET_API_URL = "https://your-api-gateway-url.amazonaws.com/prod/getFarmers"; // Replace with actual API URL
 
         function addFarmer() {
             const email = document.getElementById("email").value;
@@ -50,6 +65,34 @@
             .catch(error => {
                 console.error("Error:", error);
                 alert("Error inserting data!");
+            });
+        }
+
+        function fetchFarmers() {
+            fetch(`${GET_API_URL}?timestamp=${new Date().getTime()}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Fetched Farmers:", data);
+                    displayFarmers(data); // Call function to display data
+                })
+                .catch(error => {
+                    console.error("Error fetching farmers:", error);
+                    alert("Error fetching farmer data!");
+                });
+        }
+
+        function displayFarmers(farmers) {
+            const farmerList = document.getElementById("farmer-list");
+            farmerList.innerHTML = ""; // Clear existing data
+
+            farmers.forEach(farmer => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${farmer.emailid}</td>
+                    <td>${farmer.name}</td>
+                    <td>${farmer.age}</td>
+                `;
+                farmerList.appendChild(row);
             });
         }
     </script>
