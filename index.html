@@ -48,7 +48,7 @@
                 return;
             }
 
-            fetch(`${GET_API_URL}?timestamp=${new Date().getTime()}`), {
+            fetch(${API_URL}?timestamp=${new Date().getTime()}, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -69,7 +69,7 @@
         }
 
         function fetchFarmers() {
-            fetch(`${GET_API_URL}?timestamp=${new Date().getTime()}`)
+            fetch(${GET_API_URL}?timestamp=${new Date().getTime()})
                 .then(response => response.json())
                 .then(data => {
                     console.log("Fetched Farmers:", data);
