@@ -57,13 +57,20 @@
                     age: parseInt(age)
                 })
             })
-            .then(response => response.json())  
-            .then(data => {
-                console.log("Success:", data);
-                alert("Data inserted successfully!"); // Show success message
+            .then(response => response.text())  // Get response as text
+            .then(text => {
+                console.log("Raw Response:", text);
+                try {
+                    const data = JSON.parse(text);  // Try to parse JSON
+                    console.log("Success:", data);
+                    alert("Data inserted successfully!");
+                } catch (error) {
+                    console.error("JSON Parsing Error:", error);
+                    alert("Data inserted, but response is invalid JSON.");
+                }
             })
             .catch(error => {
-                console.error("Error:", error);
+                console.error("Fetch Error:", error);
                 alert("Error inserting data!");
             });
         }
